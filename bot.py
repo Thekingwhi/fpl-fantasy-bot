@@ -9,18 +9,30 @@ token=os.getenv("BOT_TOKEN")
 print(type(token))
 print(len(token))
 
-async def start(update,context):
+def build_keyboard():
     button=InlineKeyboardButton("Forwards",callback_data="FWD")
-    keyboard=InlineKeyboardMarkup([[button]])
-    await update.message.reply_text("helloooo!",reply_markup=keyboard)
+    button1=InlineKeyboardButton("Defenders",callback_data="DEF")
+    button2=InlineKeyboardButton("Midfielders",callback_data="MID")
+    button3=InlineKeyboardButton("Goalkeepers",callback_data="GKP")
+
+    keyboard=InlineKeyboardMarkup([[button],[button1],[button2],[button3]])
+
+    return keyboard
+
+async def start(update,context):
+    keyboard=build_keyboard()
+    await update.message.reply_text("hellooo!",reply_markup=keyboard)
+
+#async def position(update,context):
 
 async def button_handler(update,context):
     query=update.callback_query
     await query.answer()
 
+    keyboard=build_keyboard()
     pos=query.data
     text=best_by_position(pos)
-    await query.edit_message_text(text)
+    await query.edit_message_text(text,reply_markup=keyboard)
 
 async def best(update,context):
     if len(context.args)==0:
