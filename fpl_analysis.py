@@ -76,7 +76,7 @@ def best_by_position(pos):
     for player in ppm:
         if position_map[player["element_type"]]==pos:
             i+=1
-            result+= f'{i} - {player["web_name"]} - ${player["now_cost"]/10}m - {position_map[player["element_type"]]} - {player["total_points"]}pts - {player["minutes"]}min - {difficulty_map[player["team"]]}\n'
+            result+= f'{i} - {player["web_name"]} - ${player["now_cost"]/10}m - {position_map[player["element_type"]]} - {player["total_points"]}pts - {player["minutes"]}min - {difficulty_map[player["team"]]:.3f}\n'
             if i>=10:
                 return result
 
