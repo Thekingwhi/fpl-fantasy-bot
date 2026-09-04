@@ -57,7 +57,7 @@ def get_difficulty_for_team(match, team_id):
 def get_average_difficulty(team_id):
     fixtures_team=get_team_fixtures(team_id)
     difficulty_list=[]
-    for difficulty in fixtures_team[0:3]:
+    for difficulty in fixtures_team[0:1]:
         difficulty_list.append(get_difficulty_for_team(difficulty,team_id))
     match=sum(difficulty_list)/len(difficulty_list)
     return match
@@ -76,7 +76,7 @@ def best_by_position(pos):
     for player in ppm:
         if position_map[player["element_type"]]==pos:
             i+=1
-            result+= f'{i} - {player["web_name"]} - ${player["now_cost"]/10}m - {position_map[player["element_type"]]} - {player["total_points"]}pts - {player["minutes"]}min - {difficulty_map[player["team"]]:.3f}\n'
+            result+= f'{i} - {player["web_name"]} - ${player["now_cost"]/10}m - {position_map[player["element_type"]]} - {player["total_points"]}pts - {player["minutes"]}min - {difficulty_map[player["team"]]:.2f}\n'
             if i>=10:
                 return result
 
