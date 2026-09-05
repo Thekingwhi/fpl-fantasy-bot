@@ -27,7 +27,7 @@ for player in players:
         eligible_players.append(player)
 
 # 4. ترتيب اللاعبين حسب القيمة (PPM)
-ppm=sorted(eligible_players,key=lambda player: player["total_points"]/(player["now_cost"]/10),reverse=True)
+ppm_cost=sorted(eligible_players,key=lambda player: player["total_points"]/(player["now_cost"]/10),reverse=True)
 
 
 ### الخاص بصعوبه
@@ -67,6 +67,16 @@ difficulty_map={}
 for id in range(1,21):
     difficulty_map[id]=get_average_difficulty(id)
 
+# 4. ترتيب اللاعبين حسب القيمة وصعوبه(PPM)
+def get_composite_score(player):
+    ppm_player=player["total_points"]/(player["now_cost"]/10)
+    difficulty_team_player=difficulty_map[player["team"]]
+    diference=3-difficulty_team_player
+    Modification_rate=diference*0.05
+    composite_score=ppm_player*(Modification_rate+1)
+    return composite_score
+
+ppm=sorted(eligible_players,key=get_composite_score,reverse=True)
 
 
 # 5. دالة لعرض أفضل اللاعبين حسب المركز
@@ -80,3 +90,4 @@ def best_by_position(pos):
             if i>=10:
                 return result
 
+print(best_by_position("DIF"))
