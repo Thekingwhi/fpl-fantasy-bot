@@ -90,4 +90,11 @@ def best_by_position(pos):
             if i>=10:
                 return result
 
-print(best_by_position("DIF"))
+#المقارنه
+#داله لايجاد لاعب بالاسم 1
+def find_player_by_name(name):
+    name=name.lower()
+    for player in players:
+        if (player["web_name"].lower())==name:
+            return player
+    return None
