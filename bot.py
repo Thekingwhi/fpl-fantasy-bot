@@ -1,9 +1,11 @@
 import os
+import json
 from dotenv import load_dotenv
 from telegram.ext import CommandHandler,Application,CallbackQueryHandler
 from fpl_analysis import best_by_position
 from telegram import InlineKeyboardMarkup,InlineKeyboardButton
 from fpl_analysis import find_player_by_name,difficulty_map,position_map
+
 
 load_dotenv()
 token=os.getenv("BOT_TOKEN")
@@ -62,12 +64,36 @@ async def compare(update,context):
         return
     text= f'{player_1["web_name"]} \t {player_2["web_name"]} \n  ${player_1["now_cost"]/10}m \t ${player_2["now_cost"]/10}m \n {player_1["total_points"]}pts \t {player_2["total_points"]}pts \n{position_map[player_1["element_type"]]} \t {position_map[player_2["element_type"]]}\n{player_1["minutes"]}min \t {player_2["minutes"]}min \n{difficulty_map[player_1["team"]]:.2f} \t {difficulty_map[player_2["team"]]:.2f} \n'
     await update.message.reply_text(text)
-    
 
-
+#التشكليه المفضله
+#اتكد من وجود الملف لو موجود اقرا منه
+def load_teams():
+    if os.path.exists("teams.json"):
+        with open("teams.json","r")as file:
+            loaded_data=json.load(file)
+        return loaded_data
+    else:
+        a={}
+        return a
+#داله القرائه
+def save_teams(teams_data):
+    with open("teams.json","w") as file:
+        json.dump(teams_data,file)  
+# داله التي في تليجرام
+async def save_team(update,context):
+    user_id=str(update.effective_user.id)
+    teams=load_teams()
+    teams[user_id]=context.args
+    save_teams(teams)
+    await update.message.reply_text("Your team has been saved.")
+#عرض الفريق
+async def show_team(update,context):
+    team=load_teams()
+    await update.message.reply_text(team)
 app = Application.builder().token(token).build()
 app.add_handler(CommandHandler("start",start))
 app.add_handler(CommandHandler("best",best))
 app.add_handler(CallbackQueryHandler(button_handler))
 app.add_handler(CommandHandler("compare",compare))
+app.add_handler(CommandHandler("save_team",save_team))
 app.run_polling()
