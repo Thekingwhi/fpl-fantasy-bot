@@ -89,11 +89,17 @@ async def save_team(update,context):
 #عرض الفريق
 async def show_team(update,context):
     team=load_teams()
-    await update.message.reply_text(team)
+    user_id=str(update.effective_user.id)
+    if user_id not in team:
+        await update.message.reply_text("unavailable")
+        return
+    await update.message.reply_text(str(team[user_id]))
+
 app = Application.builder().token(token).build()
 app.add_handler(CommandHandler("start",start))
 app.add_handler(CommandHandler("best",best))
 app.add_handler(CallbackQueryHandler(button_handler))
 app.add_handler(CommandHandler("compare",compare))
 app.add_handler(CommandHandler("save_team",save_team))
+app.add_handler(CommandHandler("show_team",show_team))
 app.run_polling()
