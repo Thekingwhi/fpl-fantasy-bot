@@ -116,7 +116,13 @@ async def show_team(update,context):
     if user_id not in team:
         await update.message.reply_text("unavailable")
         return
-    await update.message.reply_text(str(team[user_id]))
+    result=""
+    for name in team[user_id]:
+        player=find_player_by_name(name)
+        if player is None:
+            continue
+        result+= f'{player["web_name"]} - ${player["now_cost"]/10}m - {position_map[player["element_type"]]} - {player["total_points"]}pts - {player["minutes"]}min - {difficulty_map[player["team"]]:.2f}\n'
+    await update.message.reply_text(result)
 
 app = Application.builder().token(token).build()
 app.add_handler(CommandHandler("start",start))
