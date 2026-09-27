@@ -66,6 +66,8 @@ async def compare(update,context):
     await update.message.reply_text(text)
 
 #التشكليه المفضله
+#dictionary فيه مراكز والاعداد المطلوبه
+
 #اتكد من وجود الملف لو موجود اقرا منه
 def load_teams():
     if os.path.exists("teams.json"):
@@ -75,12 +77,33 @@ def load_teams():
     else:
         a={}
         return a
-#داله القرائه
+#داله الكتابه
 def save_teams(teams_data):
     with open("teams.json","w") as file:
         json.dump(teams_data,file)  
 # داله التي في تليجرام
 async def save_team(update,context):
+    if len(context.args)!=15:
+        await update.message.reply_text("it should to enter 15 player")
+        return
+    listplayer=[]
+    for player_name in context.args:
+        listplayer.append(player_name.upper())
+    if len(listplayer)!=len(set(listplayer)):
+        await update.message.reply_text(f"Duplicate player found")
+        return
+    required={'DEF':5,'GKP':2,'MID':5,'FWD':3}
+    counts={'DEF':0,'GKP':0,'MID':0,'FWD':0}
+    for name in context.args:
+        player=find_player_by_name(name)
+        if player is None:
+            await update.message.reply_text(f"Player not found: {name}")
+            return
+        pos=position_map[player["element_type"]]
+        counts[pos]+=1
+    if counts!=required:
+        await update.message.reply_text(f"should have {required},you entered {counts}")
+        return
     user_id=str(update.effective_user.id)
     teams=load_teams()
     teams[user_id]=context.args
